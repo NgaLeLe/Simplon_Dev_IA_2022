@@ -101,3 +101,42 @@ FROM film as f join inventory as i on f.film_id = i.film_id
 	join rental as r on i.inventory_id = r.inventory_id
 WHERE return_date is not null 
 	and datediff(return_date,rental_date) < 2;
+    
+#AGGREATION - fichier 18
+#1. Afficher le nombre de films dans les quels à joué l'acteur «JOHNNY LOLLOBRIGIDA», regroupé par catégorie.
+SELECT c.category_id, name, count(f.film_id) as Qty_films
+FROM category as c join film_category as fc on c.category_id = fc.category_id
+	join film as f on fc.film_id = f.film_id
+    join film_actor as fa on f.film_id = fc.film_id
+    join actor as a on fa.actor_id = a.actor_id
+WHERE a.first_name = 'JOHNNY' 
+	and a.last_name = 'LOLLOBRIGIDA'
+GROUP BY c.category_id, name;
+
+#2. Ecrire la requête qui affiche les catégories dans les quels «JOHNNY LOLLOBRIGIDA» totalise plus de 3 films.
+SELECT c.category_id, name, count(f.film_id) as Qty_films
+FROM category as c join film_category as fc on c.category_id = fc.category_id
+	join film as f on fc.film_id = f.film_id
+    join film_actor as fa on f.film_id = fc.film_id
+    join actor as a on fa.actor_id = a.actor_id
+WHERE a.first_name = 'JOHNNY' 
+	and a.last_name = 'LOLLOBRIGIDA'
+GROUP BY c.category_id, name
+HAVING count(f.film_id) > 2000;
+
+#3. Afficher la durée moyenne d'emprunt des films par acteurs.
+SELECT  a.actor_id, a.first_name, a.last_name, avg(datediff(if(isnull(return_date), 0, return_date),rental_date)) as moyen_day_loction
+FROM film as f join film_actor as fa on f.film_id = fa.film_id
+	join actor as a on fa.actor_id = a.actor_id
+    join inventory as i on f.film_id = i.film_id
+    join rental as r on i.inventory_id = r.inventory_id
+GROUP BY a.actor_id, a.first_name, a.last_name;
+
+#4. L'argent total dépensé au vidéos club par chaque clients, classé par ordre décroissant.
+SELECT a.address as 'club', first_name, last_name, sum(p.amount) as 'total'
+FROM customer as c join payment as p on c.customer_id = p.customer_id
+	join store as s on c.store_id = s.store_id
+    join address as a on a.address_id = s.address_id
+GROUP BY a.address, first_name, last_name
+order by sum(p.amount);
+
