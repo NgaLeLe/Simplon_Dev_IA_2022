@@ -96,7 +96,16 @@ FROM film as f join inventory as i on f.film_id = i.film_id
 WHERE city = 'Woodridge';
 
 #5.Quel sont les 10 films dont la durée d’emprunt à été la plus courte ?
+#datediff est arrondi au jour
 SELECT f.film_id, title, datediff(return_date,rental_date) as duration_loc
+FROM film as f join inventory as i on f.film_id = i.film_id
+	join rental as r on i.inventory_id = r.inventory_id
+WHERE return_date is not null
+ORDER BY datediff(return_date,rental_date)
+LIMIT 10;
+
+#tester avec timediff : est plus précis par heure, minute , n'est pas appliqué calcul d'aggréation (AVG)
+SELECT f.film_id, title, timediff(return_date,rental_date) as duration_loc
 FROM film as f join inventory as i on f.film_id = i.film_id
 	join rental as r on i.inventory_id = r.inventory_id
 WHERE return_date is not null
