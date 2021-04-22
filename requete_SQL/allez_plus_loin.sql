@@ -14,7 +14,7 @@ LIMIT 10;
 SELECT first_name, last_name, sum(amount) as 'total_depense'
 FROM customer join payment on customer.customer_id = payment.customer_id
 GROUP BY  first_name, last_name
-ORDER BY 'total_depense' DESC
+ORDER BY sum(amount) DESC
 LIMIT 10;
 
 # 3- Afficher la durée moyenne de location par film triée de manière descendante
@@ -216,15 +216,34 @@ FROM category as c join film_category as fc on c.category_id = fc.category_id
 GROUP BY c.category_id, name
 ORDER BY count(r.rental_id) DESC
 LIMIT 3;
+#sol count(*) -> MAIS moins de performance
+SELECT c.category_id, name, count(*) as 'Qty_location'
+FROM category as c join film_category as fc on c.category_id = fc.category_id
+	 join film as f on fc.film_id = f.film_id
+     join inventory as i on f.film_id = i.film_id
+     join rental as r on i.inventory_id = r.inventory_id
+GROUP BY c.category_id, name
+ORDER BY count(*) DESC
+LIMIT 3;
 
 # 19- Quelles sont les 10 villes où on a fait le plus de locations?
-
+#par ville résident du client
 SELECT city, count(*) as 'Nombre de location'
 FROM city as c join address as a on c.city_id = a.city_id
 	join customer as cu on a.address_id = cu.address_id
     join rental as r on cu.customer_id = r.customer_id
 GROUP BY city 
 ORDER BY count(*) DESC 
+LIMIT 10;
+
+#par city de store
+SELECT city, count(rental_id) as 'Nombre de location'
+FROM city as c join address as a on c.city_id = a.city_id
+	join store as s on a.address_id = s.address_id
+    join inventory as i on s.store_id = i.store_id
+    join rental as r on i.inventory_id = r.inventory_id
+GROUP BY city 
+ORDER BY count(rental_id) DESC 
 LIMIT 10;
 
 # 20- Lister les acteurs ayant joué dans au moins 1 film
