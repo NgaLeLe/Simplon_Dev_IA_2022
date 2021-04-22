@@ -6,7 +6,7 @@ SELECT concat(rental_id, ' - ', date_format(rental_date,"%b"), ' - ', title)
 FROM rental AS r JOIN inventory AS i ON r.inventory_id = i.inventORy_id
       JOIN film AS f ON i.film_id = f.film_id
 WHERE year(rental_date) = 2006 
-    OR year(RETURN_DATE)=2006;
+    OR year(RETURN_DATE) = 2006;
 
 # 2. Afficher la colONne qui dONne la durée de locatiON des films en jour.
 SELECT  rental_id, datediff(return_date, rental_date) as duree_location
