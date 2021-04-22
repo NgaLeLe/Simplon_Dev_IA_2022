@@ -7,6 +7,13 @@ FROM rental AS r JOIN inventory AS i ON r.inventory_id = i.inventORy_id
       JOIN film AS f ON i.film_id = f.film_id
 WHERE year(rental_date) = 2006 
     OR year(RETURN_DATE) = 2006;
+    
+#sol2
+SELECT concat(rental_id, ' - ', date_format(rental_date,"%b"), ' - ', title) as 'location 2006'
+FROM rental AS r JOIN inventory AS i ON r.inventory_id = i.inventORy_id
+      JOIN film AS f ON i.film_id = f.film_id
+WHERE (rental_date BETWEEN '2006-01-01' AND  '2006-12-31')
+    OR (return_date BETWEEN '2006-01-01' AND  '2006-12-31');
 
 # 2. Afficher la colONne qui dONne la durée de locatiON des films en jour.
 SELECT  rental_id, datediff(return_date, rental_date) as duree_location
@@ -14,14 +21,18 @@ FROM rental
 WHERE rental_date is not null;
 
 # 3. Afficher les emprunts réalisés avant 1h du matin en 2005. Afficher la date dans un fORmat lisible.
-SELECT rental_id, date_fORmat(rental_date,"%h:%m %c-%b-%y ") 
+SELECT rental_id, date_format(rental_date,"%h:%m %c-%b-%y ") 
 FROM rental
 WHERE year(rental_date) = 2005
     and hour(rental_date) < 1; 
 
 # 4. Afficher les emprunts réalisé entre le mois d’avril et le moi de mai. La liste doit être trié du plus ancien au plus récent.
 SELECT * FROM rental
-WHERE mONth(rental_date) in (4,5) and year(rental_date) = 2005
+WHERE month(rental_date) in (4,5) and year(rental_date) = 2005
+ORder by rental_date;
+#Sol-2
+SELECT * FROM rental
+WHERE rental_date BETWEEN '2005-04-01' AND  '2006-05-31'
 ORder by rental_date;
 
 # 5.Lister les film dONt le nom ne commence pAS par le «Le».
@@ -31,10 +42,14 @@ WHERE title  not like 'LE%'
    and title not like 'Le%';
 
 # 6.Lister les films ayant la mentiON «PG-13» ou «NC-17». Ajouter une colONne qui affichera «oui» si «NC-17» et «nON» SinON.
-SELECT film_id, title, dedescription, release_year, length, if(rating = 'NC-17','Oui','NON') AS NC_17 
+SELECT film_id, title, description, release_year, length, if(rating = 'NC-17','Oui','NON') AS NC_17 
 FROM film
 WHERE rating = 'NC-17' 
    OR  rating = 'PG-13';
+#Sol-2
+SELECT film_id, title, description, release_year, length, if(rating = 'NC-17','Oui','NON') AS NC_17 
+FROM film
+WHERE rating IN('NC-17', 'PG-13');
 
 # 7.Fournir la liste des catégORie qui commence par un ‘A’ ou un ‘C’. (Utiliser LEFT).
 SELECT DISTINCT c.category_id, name
