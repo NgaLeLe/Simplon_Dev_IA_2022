@@ -1,13 +1,13 @@
 use sakila;
 
 #1- Afficher les 10 locations les plus longues (nom/prenom client, film, video club, durée)
-SELECT first_name, last_name, a.address as 'club', title, datediff(if(return_date is null,0, return_date),rental_date) as duree
+SELECT first_name, last_name, a.address as 'club', title, timediff(if(return_date is null,0, return_date),rental_date) as duree
 FROM customer as c join rental as r on c.customer_id = r.customer_id
 	join inventory as i on  r.inventory_id = i.inventory_id
     join film as f on i.film_id = f.film_id
     join store on c.store_id = store.store_id
     join address as a on store.address_id = a.address_id
-ORDER BY duree DESC
+ORDER BY timediff(if(return_date is null,0, return_date),rental_date) DESC
 LIMIT 10;
 
 # 2- Afficher les 10 meilleurs clients actifs par montant dépensé (nom/prénom client, montant dépensé)
@@ -18,12 +18,17 @@ ORDER BY sum(amount) DESC
 LIMIT 10;
 
 # 3- Afficher la durée moyenne de location par film triée de manière descendante
-SELECT round(avg(datediff(if(return_date is null,0, return_date),rental_date)), 2) as 'average_days', f.film_id, title
+SELECT avg(timediff(return_date,rental_date))/(24*60*60) as 'average_days', f.film_id, title
 FROM film as f join inventory as i on f.film_id = i.film_id
 	join rental as r on i.inventory_id = r.inventory_id
 GROUP BY f.film_id, title
-ORDER BY round(avg(datediff(if(return_date is null,0, return_date),rental_date)), 2) DESC ;
-
+ORDER BY avg(timediff(return_date,rental_date))/(24*60*60) DESC ;
+#sol2
+SELECT round(avg(datediff(return_date,rental_date)),2) as 'average_days', f.film_id, title
+FROM film as f join inventory as i on f.film_id = i.film_id
+	join rental as r on i.inventory_id = r.inventory_id
+GROUP BY f.film_id, title
+ORDER BY round(avg(datediff(return_date,rental_date)),2) DESC ;
 #NE PAS utilise alias de colonne d'aggreation dans ORDER BY, si non ne marche pas
 
 #CHeck list de film n'ai personne joué ou 
@@ -251,3 +256,5 @@ SELECT a.actor_id, first_name, last_name, count(fa.film_id) as 'nb_film_joue'
 FROM actor as a join film_actor as fa on a.actor_id = fa.actor_id
 GROUP BY a.actor_id, first_name, last_name 
 HAVING count(fa.film_id) > 30;
+
+

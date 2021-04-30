@@ -129,38 +129,68 @@ WHERE return_date is not null
 #AGGREATION - fichier 18
 #1. Afficher le nombre de films dans les quels à joué l'acteur «JOHNNY LOLLOBRIGIDA», regroupé par catégorie.
 SELECT c.category_id, name, count(f.film_id) as Qty_films
-FROM category as c join film_category as fc on c.category_id = fc.category_id
-	join film as f on fc.film_id = f.film_id
-    join film_actor as fa on f.film_id = fc.film_id
-    join actor as a on fa.actor_id = a.actor_id
-WHERE a.first_name = 'JOHNNY' 
-	and a.last_name = 'LOLLOBRIGIDA'
+FROM  actor as a 
+	join film_actor as fa on ( a.actor_id = fa.actor_id AND a.first_name = 'JOHNNY' 
+								and a.last_name = 'LOLLOBRIGIDA')
+    join film as f on fa.film_id = f.film_id
+    join film_category as fc on f.film_id = fc.film_id  
+    join category as c on fc.category_id = c.category_id
 GROUP BY c.category_id, name;
 
 #2. Ecrire la requête qui affiche les catégories dans les quels «JOHNNY LOLLOBRIGIDA» totalise plus de 3 films.
 SELECT c.category_id, name, count(f.film_id) as Qty_films
-FROM category as c join film_category as fc on c.category_id = fc.category_id
-	join film as f on fc.film_id = f.film_id
-    join film_actor as fa on f.film_id = fc.film_id
-    join actor as a on fa.actor_id = a.actor_id
-WHERE a.first_name = 'JOHNNY' 
+FROM  actor as a 
+	join film_actor as fa on ( a.actor_id = fa.actor_id AND a.first_name = 'JOHNNY' 
+								and a.last_name = 'LOLLOBRIGIDA')
+    join film as f on fa.film_id = f.film_id
+    join film_category as fc on f.film_id = fc.film_id  
+    join category as c on fc.category_id = c.category_id
+GROUP BY c.category_id, name
+HAVING count(f.film_id) > 3;
+
+#solution 2: avec filtrage mets dans WHERE
+SELECT c.category_id, name, count(f.film_id) as Qty_films
+FROM  actor as a 
+	join film_actor as fa on  a.actor_id = fa.actor_id 
+    join film as f on fa.film_id = f.film_id
+    join film_category as fc on f.film_id = fc.film_id  
+    join category as c on fc.category_id = c.category_id
+WHERE   a.first_name = 'JOHNNY' 
 	and a.last_name = 'LOLLOBRIGIDA'
 GROUP BY c.category_id, name
-HAVING count(f.film_id) > 2000;
+HAVING count(f.film_id) > 3;
 
 #3. Afficher la durée moyenne d'emprunt des films par acteurs.
-SELECT  a.actor_id, a.first_name, a.last_name, avg(datediff(if(isnull(return_date), 0, return_date),rental_date)) as moyen_day_loction
-FROM film as f join film_actor as fa on f.film_id = fa.film_id
-	join actor as a on fa.actor_id = a.actor_id
+SELECT  a.actor_id, a.first_name, a.last_name, avg(timestampdiff(SECOND,rental_date, return_date))/3600 as moyen_loction
+FROM 	actor as a  
+	join film_actor as fa on a.actor_id = fa.actor_id
+	join film as f on fa.film_id = f.film_id
     join inventory as i on f.film_id = i.film_id
     join rental as r on i.inventory_id = r.inventory_id
+WHERE return_date IS NOT NULL
 GROUP BY a.actor_id, a.first_name, a.last_name;
-
+#sol2
+SELECT  a.actor_id, a.first_name, a.last_name, avg(timestampdiff(SECOND,rental_date, return_date))/3600 as moyen_loction
+FROM 	rental as r 
+	join inventory as i on i.inventory_id = r.inventory_id
+	join film as f on f.film_id = i.film_id
+    join film_actor as fa on  fa.film_id = f.film_id
+	join actor as a  on a.actor_id = fa.actor_id
+ WHERE r.return_date IS NOT NULL
+ GROUP BY a.actor_id;
+ 
 #4. L'argent total dépensé au vidéos club par chaque clients, classé par ordre décroissant.
-SELECT a.address as 'club', first_name, last_name, sum(p.amount) as 'total'
+SELECT a.address as club, first_name, last_name, sum(p.amount) as total
 FROM customer as c join payment as p on c.customer_id = p.customer_id
 	join store as s on c.store_id = s.store_id
     join address as a on a.address_id = s.address_id
 GROUP BY a.address, first_name, last_name
-order by sum(p.amount);
+ORDER BY sum(p.amount);
 
+#essaye d'autre façon de la jointure
+SELECT first_name, last_name, sum(p.amount) as total
+FROM customer as c 
+	join rental as r on c.customer_id = r.customer_id
+	join payment as p on p.rental_id = r.rental_id
+GROUP BY  first_name, last_name
+ORDER BY total;
