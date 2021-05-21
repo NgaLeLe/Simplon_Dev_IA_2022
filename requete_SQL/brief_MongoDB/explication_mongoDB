@@ -1,0 +1,86 @@
+BRIEFS MongoDB Compass
+
+Sur collection VOITURES
+
+Q2. Selectionner tous les documents Selectionner tous les documents avec Valerio ou Rafik en propriétaire 
+dans onglet FIND, j'ai mis
+
+{ Proprietaire: { $in: ["Rafik", "Valerio"] } }
+
+Solution 2
+
+{ $or: [ {Proprietaire: "Valerio"}, {Proprietaire : "Rafik"}]}
+
+Q3. Mettre à jour tous les documents avec Valerio en propriétaire : 
+- Ajouter un champ PropriétairePrecedent auquel vous donnerez la valeur Valerio 
+- Mettre à jour la valeur du champ Propriétaire avec votre prénom
+
+J'ai lancé _MONGOSH BETA et saisi
+
+> use simplon
+
+choisi les documents dont Proprietaire sont "Valerio" et y met une nouvelle valeur "Nga"
+ 
+> db.voitures.update({Proprietaire:"Valerio"}, {$set : {"Proprietaire":"Nga"}}, {upsert:false, multi:true}) 
+
+choisi les documents dont Proprietaire sont "Nga" et insère valeur "Valerio" dans le nouveau champ ProprietairePrecedent
+
+db.voitures.update({Proprietaire:"Nga"}, {$set : {"ProprietairePrecedent":"Valerio"}}, {upsert:false, multi:true}) 
+
+Q4. Supprimer tous les documents ayant "Couleur":"Blanc"
+
+> db.voitures.remove ( { Couleur: "Blanc" } )
+
+Sur collection COLLECTIONNEUR
+
+Q1. J'ai créé une nouvelle collection Collectionneur
+J'ai inséré les document par ADD DATA / Add document sous format JSON
+ à fin exporter un fichier JSON 
+
+Q2. Selectionner tous les documents Selectionner tous les documents avec Valerio ou Rafik en propriétaire
+Il y a 2 manières à faire
+
+V1. Dans la fenêtre de collection Collectionneur, saisie à l'onglet FIND la critère de filtrage
+{ $or : [{Proprietaire: "Valerio"}, {Proprietaire:"Rafix"}] }
+
+V2. J'ai lancé MongoDB Beta
+
+Q3.  Mettre à jour tous les documents avec Valerio en propriétaire : 
+Ajouter un champ PropriétairePrecedent auquel vous donnerez la valeur Valerio 
+Mettre à jour la valeur du champ Propriétaire avec votre prénom
+
+V1. Au niveau de MongoDB Beta, j'ai entré
+
+> db.Collectionneur.updateMany({Proprietaire:"Valerio"},{ $set: {Proprietaire: "Nga", Proprietaire_precedent: "Valerio"}})
+
+Le 1e paramètre : critéria de filtre (sélectionne les documents) : avec Proprietaire est "Valerio"
+Le 2e paramètre : j'ai appliqué opérator $set qui permet d'ajouter un nouvelle champs (Proprietaire_precedent) 
+   et de affecter une valeur à champs existants(Proprietaire)
+
+Le résultat est trouvé dans fichier question3_Collectionneur.json
+
+Q4. Supprimer tous les documents ayant "Couleur":"Blanc"
+
+Q5. Selectionner tous les documents ayant "Couleur":"Noir", et remarquez le détail du résultat. 
+En fonction de la documentation MongoDB, expliquez le résultat et proposez un design différent 
+pour la collection ou un filtre différent.
+
+> db.Collectionneur.find({Voitures: {$elemMatch: {Couleur: "Noir"}}},  {'Voitures.$': 1})
+
+ou l'utilisation de l'interface
+j'ai remli la condition de filtrage dans l'onglet FITRE
+
+{Voitures: { $elemMatch: {Couleur: "Noir"}}}
+
+et dans l'onglet PROJECT
+
+ {'Voitures.$': 1}  
+ça remonte seulement des documents correspondants exactement la condition de filtrage
+
+Si non, ça retourne les collectioneurs qui appartients les voitures en noir mais ça affiche tous les voitures propriétés
+
+
+
+
+
+

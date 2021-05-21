@@ -1,0 +1,30 @@
+[{
+  "_id": {
+    "$oid": "6095112f220af80db53bd446"
+  },
+  "Proprietaire": "Nga",
+  "Voitures": [
+    {
+      "Marque": "Pontiac",
+      "Modele": "Firebird",
+      "Denomination": "KITT",
+      "Cylindree": 5700,
+      "Couleur": "Noir"
+    },
+    {
+      "Marque": "Ferrari",
+      "Modele": "F40",
+      "Denomination": "Testarossa",
+      "Cylindree": 2936,
+      "Couleur": "Rouge"
+    },
+    {
+      "Marque": "Chevrolet",
+      "Modele": "Corvette",
+      "Denomination": "Lola",
+      "Cylindree": 5400,
+      "Couleur": "Rouge"
+    }
+  ],
+  "Proprietaire_precedent": "Valerio"
+}]
