@@ -60,21 +60,42 @@ Le 2e paramètre : j'ai appliqué opérator $set qui permet d'ajouter un nouvell
 Le résultat est trouvé dans fichier question3_Collectionneur.json
 
 Q4. Supprimer tous les documents ayant "Couleur":"Blanc"
+Dans Mongosh Beta, j'ai saisie
+
+db.Collectionneur.update({}, {$pull: {Voitures: {Couleur: "Blanc"}}}, {multi: true})
+
+- Paramètre 1: {} - condition de requête:  j'ai cherche tous les documents
+- Para 2 - action de la commande update: 
+  j'ai utilisé $pull qui permet de supprimer les elements, etant les voitures dont la couleur est Blanc dans l'array
+- Para 3: j'ai utilisé {multi : true } pour appliquer s/plusieurs documents.
+
 
 Q5. Selectionner tous les documents ayant "Couleur":"Noir", et remarquez le détail du résultat. 
 En fonction de la documentation MongoDB, expliquez le résultat et proposez un design différent 
 pour la collection ou un filtre différent.
+J'ai joué 1e temps avec
 
-> db.Collectionneur.find({Voitures: {$elemMatch: {Couleur: "Noir"}}},  {'Voitures.$': 1})
+> db.Collectionneur.find({Voitures.Couleur: "Noir"})
+
+ça retourne les collectionneurs qui proccède une voiture en Noir, mais il affiche aussi tous les voitures propriétées
+
+
+Si, je saisie
+
+> db.Collectionneur.find({"Voitures.Couleur": "Noir"}}},  {"Voitures.$": 1})
+
+> db.Collectionneur.find({"Voitures": {$elemMatch: {"Couleur": "Noir"}}},  {'Voitures.$': 1})
 
 ou l'utilisation de l'interface
 j'ai remli la condition de filtrage dans l'onglet FITRE
 
-{Voitures: { $elemMatch: {Couleur: "Noir"}}}
+{"Voitures": { $elemMatch: {"Couleur": "Noir"}}}
+ou
+{"Voitures.Couleur": "Noir"}
 
 et dans l'onglet PROJECT
 
- {'Voitures.$': 1}  
+ {"Voitures.$": 1}  
 ça remonte seulement des documents correspondants exactement la condition de filtrage
 
 Si non, ça retourne les collectioneurs qui appartients les voitures en noir mais ça affiche tous les voitures propriétés
