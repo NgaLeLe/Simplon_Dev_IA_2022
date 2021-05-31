@@ -1,7 +1,7 @@
 use sakila;
 
 #1- Afficher les 10 locations les plus longues (nom/prenom client, film, video club, durée)
-SELECT first_name, last_name, a.address as 'club', title, timediff(if(return_date is null,0, return_date),rental_date) as duree
+SELECT first_name, last_name, a.address as 'club', title, timediff(if(return_date is null,0, return_date),rental_date)/(24*60*60) as duree
 FROM customer as c join rental as r on c.customer_id = r.customer_id
 	join inventory as i on  r.inventory_id = i.inventory_id
     join film as f on i.film_id = f.film_id
