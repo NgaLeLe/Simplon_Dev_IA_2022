@@ -1,0 +1,10 @@
+{
+    "mysql":{
+        "connector": "pymysql",
+        "user" : "nga",
+        "password" : "Simplon123!",
+        "host" : "localhost",
+        "port" : "3306",
+        "baseDonnee" : "sakila"
+    }
+}
