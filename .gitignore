@@ -3,15 +3,19 @@
 
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
-
+.vscode/
 # IPython
 profile_default/
 ipython_config.py
 
 # Remove previous ipynb_checkpoints
 #   git rm -r .ipynb_checkpoints/
-
-Machine_Learning/Jeux_de_donnees/
-Machine_Learning/Systeme_recommandation/
 Jeux_de_donnees/
 exemples/
+Machine_Learning/
+Machine_Learning/Detection de visages/
+Machine_Learning/Jeux_de_donnees/
+Machine_Learning/Systeme_recommandation/
+Machine_Learning/support_cours/
+
+reseaux_neuronnes/data/
