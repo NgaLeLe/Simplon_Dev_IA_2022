@@ -12,7 +12,7 @@ ipython_config.py
 #   git rm -r .ipynb_checkpoints/
 # Jeux_de_donnees/
 exemples/
-
+Detection_visage/env/
 Machine_Learning/Detection de visages/env/
 # Machine_Learning/Jeux_de_donnees/
 # Machine_Learning/Jeux_de_donnees/aclimdb/
